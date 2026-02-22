@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>TRADEMIND AGENT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+/* ===== NAVBAR ===== */
+nav{
+    width:100%;
+    background:#0f172a;
+    padding:14px 40px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:fixed;
+    top:0;
+    z-index:1000;
+}
+
+nav .logo{
+    color:#fff;
+    font-size:20px;
+    font-weight:bold;
+    letter-spacing:1px;
+}
+
+nav ul{
+    list-style:none;
+    display:flex;
+    gap:28px;
+}
+
+nav ul li a{
+    color:#e5e7eb;
+    text-decoration:none;
+    font-size:15px;
+    transition:0.3s;
+    white-space:nowrap;
+}
+
+nav ul li a:hover{
+    color:#60a5fa;
+}
+
+/* ===== HERO (WELCOME) ===== */
+.hero{
+    min-height:100vh;
+    background:linear-gradient(135deg,#4f46e5,#6366f1);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding-top:90px;
+    color:#fff;
+}
+
+.hero-content{
+    animation:fadeSlide 1.4s ease forwards;
+}
+
+.hero h1{
+    font-size:48px;
+    margin-bottom:16px;
+}
+
+.hero p{
+    max-width:680px;
+    font-size:18px;
+    line-height:1.6;
+    color:#e0e7ff;
+    margin:auto;
+}
+
+@keyframes fadeSlide{
+    from{
+        opacity:0;
+        transform:translateY(40px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* ===== TEAM SECTION ===== */
+#team{
+    padding:100px 8%;
+    background:#f8fafc;
+}
+
+#team h2{
+    text-align:center;
+    font-size:36px;
+    margin-bottom:12px;
+}
+
+#team .subtitle{
+    text-align:center;
+    color:#64748b;
+    margin-bottom:60px;
+    font-size:16px;
+}
+
+/* ===== TEAM GRID ===== */
+.team-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(260px,1fr));
+    gap:36px;
+}
+
+/* ===== TEAM CARD ===== */
+.team-card{
+    background:#fff;
+    border-radius:20px;
+    padding:36px 24px 42px;
+    min-height:520px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.1);
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+    transition:all 0.45s ease;
+}
+
+/* glow layer */
+.team-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+        120deg,
+        rgba(79,70,229,0.18),
+        rgba(99,102,241,0.18),
+        transparent 60%
+    );
+    opacity:0;
+    transition:0.4s ease;
+}
+
+.team-card:hover::before{
+    opacity:1;
+}
+
+.team-card:hover{
+    transform:translateY(-14px) scale(1.03);
+    box-shadow:0 22px 45px rgba(79,70,229,0.35);
+}
+
+/* ===== IMAGE ===== */
+.team-img{
+    width:150px;
+    height:150px;
+    margin:0 auto 22px;
+    border-radius:50%;
+    overflow:hidden;
+    border:4px solid #4f46e5;
+}
+
+.team-img img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:transform 0.4s ease;
+}
+
+.team-card:hover .team-img img{
+    transform:scale(1.1);
+}
+
+/* ===== TEXT ===== */
+.team-card h4{
+    font-size:21px;
+    margin-bottom:6px;
+}
+
+.team-card span{
+    font-size:14px;
+    font-weight:600;
+    color:#4f46e5;
+}
+
+.team-card p{
+    font-size:14px;
+    line-height:1.75;
+    color:#475569;
+    margin-top:16px;
+}
+
+/* ===== CONTACT ===== */
+#contact{
+    padding:70px;
+    text-align:center;
+    background:#fff;
+}
+
+#contact h2{
+    font-size:30px;
+    margin-bottom:10px;
+}
+
+#contact p{
+    color:#555;
+}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+    .hero h1{font-size:34px;}
+    nav{flex-direction:column;gap:10px;}
+    nav ul{flex-wrap:wrap;justify-content:center;}
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav>
+    <div class="logo">TRADEMIND AGENT</div>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/login">Login / Signup</a></li>
+        <li><a href="#team">Team</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero">
+    <div class="hero-content">
+        <h1>Welcome to TRADEMIND AGENT</h1>
+        <p>
+            An AI-powered stock trading and market advisory platform  
+            helping investors take smarter, data-driven decisions
+            with clarity and confidence.
+        </p>
+    </div>
+</section>
+
+<!-- ===== TEAM ===== -->
+<section id="team">
+    <h2>Our Team</h2>
+    <p class="subtitle">
+        The people building intelligent financial solutions at TRADEMIND
+    </p>
+
+    <div class="team-grid">
+
+        <div class="team-card">
+            <div class="team-img">
+                <img src="{{ url_for('static', filename='images/my_photo.jpeg') }}">
+            </div>
+            <h4>Founder</h4>
+            <span>Mr. Tanish Agrawal</span>
+            <p>
+                Vision behind TRADEMIND AGENT.<br>
+                Leads product direction & innovation.<br>
+                Focused on AI-driven finance systems.
+            </p>
+        </div>
+
+        <div class="team-card">
+            <div class="team-img">
+                <img src="{{ url_for('static', filename='images/ml_engineer.jpeg') }}">
+            </div>
+            <h4>ML Engineer</h4>
+            <span>AI & Prediction Models</span>
+            <p>
+                Builds intelligent prediction logic.<br>
+                Works on market & historical data.<br>
+                Improves accuracy & confidence.
+            </p>
+        </div>
+
+        <div class="team-card">
+            <div class="team-img">
+                <img src="{{ url_for('static', filename='images/backend_dev.jpeg') }}">
+            </div>
+            <h4>Backend Developer</h4>
+            <span>APIs & Systems</span>
+            <p>
+                Designs scalable backend services.<br>
+                Handles real-time data pipelines.<br>
+                Ensures reliability & performance.
+            </p>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section id="contact">
+    <h2>Contact Us</h2>
+    <p>Email: support@trademind.ai</p>
+</section>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login | TradeMind AI</title>
+
+    <style>
+        body{
+            background:#f4f6f9;
+            font-family:Arial, sans-serif;
+            height:100vh;
+            margin:0;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+
+        .card{
+            width:420px;
+            background:#fff;
+            padding:30px;
+            border-radius:16px;
+            box-shadow:0 10px 30px rgba(0,0,0,0.12);
+        }
+
+        h2{
+            text-align:center;
+            margin-bottom:20px;
+        }
+
+        label{
+            font-weight:bold;
+            margin-top:12px;
+            display:block;
+        }
+
+        input, button{
+            width:100%;
+            padding:10px;
+            margin-top:6px;
+            border-radius:8px;
+            border:1px solid #ccc;
+            font-size:14px;
+        }
+
+        .captcha{
+            margin-top:14px;
+            background:#eef2ff;
+            padding:10px;
+            border-radius:8px;
+            font-weight:bold;
+            text-align:center;
+            letter-spacing:2px;
+        }
+
+        button{
+            background:#4f46e5;
+            color:#fff;
+            border:none;
+            margin-top:20px;
+            font-size:16px;
+            cursor:pointer;
+        }
+
+        button:hover{
+            background:#4338ca;
+        }
+
+        .error{
+            color:red;
+            font-size:13px;
+            margin-top:10px;
+            text-align:center;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h2>🔐 Login to TradeMind AI</h2>
+
+    <form method="POST">
+
+        <label>Full Name</label>
+        <input type="text" name="name" required>
+
+        <label>Age</label>
+        <input type="number" name="age" required>
+
+        <label>Email ID</label>
+        <input type="email" name="email" required>
+
+        <label>Mobile Number</label>
+        <input type="tel" name="mobile" required>
+
+        <div class="captcha">
+            {{ captcha }}
+        </div>
+
+        <label>Enter Captcha</label>
+        <input type="text" name="captcha_input" placeholder="Enter captcha shown above" required>
+
+        <button type="submit">Login</button>
+
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+    </form>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Indian Market Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+    font-family: 'Segoe UI', Arial;
+    background:#f5f7fb;
+    margin:0;
+}
+
+.container{
+    width:96%;
+    margin:auto;
+    padding:20px;
+}
+
+h2{
+    margin-bottom:20px;
+}
+
+/* KPI */
+.kpi-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:16px;
+    margin-bottom:30px;
+}
+
+.kpi-card{
+    background:white;
+    padding:18px;
+    border-radius:14px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+    text-align:center;
+}
+
+.kpi-card p{
+    margin:0;
+    font-size:14px;
+    color:#777;
+}
+
+.kpi-card h3{
+    margin-top:8px;
+    font-size:26px;
+}
+
+/* Layout */
+.grid-2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+    margin-bottom:20px;
+}
+
+.card{
+    background:white;
+    padding:18px;
+    border-radius:14px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+
+canvas{
+    height:260px;
+}
+
+/* CTA Button */
+.cta-wrapper{
+    margin:45px 0;
+    text-align:center;
+}
+
+.cta-button{
+    display:inline-block;
+    background:linear-gradient(135deg,#4f46e5,#3b82f6);
+    color:white;
+    padding:18px 44px;
+    font-size:20px;
+    font-weight:600;
+    border-radius:40px;
+    text-decoration:none;
+    box-shadow:0 12px 30px rgba(79,70,229,0.4);
+    transition:all 0.3s ease;
+}
+
+.cta-button:hover{
+    transform:translateY(-4px);
+    box-shadow:0 18px 40px rgba(79,70,229,0.5);
+}
+
+.cta-wrapper p{
+    margin-top:14px;
+    color:#666;
+    font-size:14px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<h2>📊 Indian Market Dashboard</h2>
+
+<!-- KPI CARDS -->
+<div class="kpi-grid">
+    <div class="kpi-card"><p>NIFTY</p><h3>{{ nifty_kpi }}</h3></div>
+    <div class="kpi-card"><p>SENSEX</p><h3>{{ sensex_kpi }}</h3></div>
+    <div class="kpi-card"><p>BANKNIFTY</p><h3>{{ banknifty_kpi }}</h3></div>
+    <div class="kpi-card"><p>GOLD</p><h3>{{ gold_kpi }}</h3></div>
+    <div class="kpi-card"><p>SILVER</p><h3>{{ silver_kpi }}</h3></div>
+</div>
+
+<!-- ROW 1 -->
+<div class="grid-2">
+    <div class="card">
+        <h4>Market Trend</h4>
+        <canvas id="trendChart"></canvas>
+    </div>
+
+    <div class="card">
+        <h4>Market Allocation</h4>
+        <canvas id="donutChart"></canvas>
+    </div>
+</div>
+
+<!-- ROW 2 -->
+<div class="grid-2">
+    <div class="card">
+        <h4>Gold vs Silver</h4>
+        <canvas id="commodityChart"></canvas>
+    </div>
+
+    <div class="card">
+        <h4>Top Stocks</h4>
+        <canvas id="stockChart"></canvas>
+    </div>
+</div>
+
+<!-- CENTER CTA -->
+<div class="cta-wrapper">
+    <a href="/predict" class="cta-button">🚀 Make My Prediction</a>
+    <p>Get AI-powered Buy / Hold / Sell suggestion</p>
+</div>
+
+</div>
+
+<script>
+new Chart(trendChart,{
+    type:'bar',
+    data:{
+        labels:{{ dates|tojson }},
+        datasets:[
+            {label:'NIFTY',data:{{ nifty|tojson }}},
+            {label:'SENSEX',data:{{ sensex|tojson }}}
+        ]
+    }
+});
+
+new Chart(donutChart,{
+    type:'doughnut',
+    data:{
+        labels:['Equity','Commodities','Banking'],
+        datasets:[{data:[50,20,30]}]
+    }
+});
+
+new Chart(commodityChart,{
+    type:'line',
+    data:{
+        labels:{{ dates|tojson }},
+        datasets:[
+            {label:'Gold',data:{{ gold|tojson }},fill:true},
+            {label:'Silver',data:{{ silver|tojson }},fill:true}
+        ]
+    }
+});
+
+new Chart(stockChart,{
+    type:'bar',
+    data:{
+        labels:{{ stock_names|tojson }},
+        datasets:[
+            {label:'Top Stocks',data:{{ stock_prices|tojson }}}
+        ]
+    }
+});
+</script>
+
+</body>
+</html>
+
