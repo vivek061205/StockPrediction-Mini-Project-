@@ -1,196 +1,217 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AI Stock Advisor</title>
+    <title>Prediction | TradeMind AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-        body { background:#f4f6f9; font-family:Arial, sans-serif; }
-        .container { width:60%; margin:auto; padding:30px 0; }
+        *{box-sizing:border-box;}
+        body{
+            margin:0;
+            font-family:"Segoe UI", Arial, sans-serif;
+            background:radial-gradient(circle at 20% 10%, #1e293b 0%, #0b1120 45%, #020617 100%);
+            color:#e2e8f0;
+        }
+        .container{width:min(1200px,94%);margin:auto;padding:26px 0 34px;animation:fadeIn .7s ease;}
+        .topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin:6px 0 20px;}
+        .title h2{margin:0;color:#f8fafc;font-size:30px;}
+        .title p{margin:6px 0 0;color:#94a3b8;font-size:14px;}
+        .actions{display:flex;gap:8px;}
+        .action-btn{padding:9px 12px;border-radius:10px;border:1px solid #334155;background:#111827;color:#e2e8f0;text-decoration:none;font-size:13px;font-weight:600;transition:.2s ease;}
+        .action-btn:hover{transform:translateY(-2px);box-shadow:0 10px 18px rgba(2,6,23,.3);}
 
-        .card{
-            background:#fff;
-            padding:22px;
-            border-radius:14px;
-            box-shadow:0 6px 18px rgba(0,0,0,0.08);
-            margin-bottom:25px;
+        .layout{display:grid;grid-template-columns:360px 1fr;gap:18px;align-items:start;}
+        .glass{
+            background:linear-gradient(135deg, rgba(255,255,255,.09), rgba(255,255,255,.03));
+            border:1px solid rgba(148,163,184,.25);
+            border-radius:18px;
+            box-shadow:0 14px 30px rgba(2,6,23,.45);
+            backdrop-filter:blur(10px);
+            -webkit-backdrop-filter:blur(10px);
         }
 
-        label{font-weight:bold;}
+        .form-card{padding:18px;position:sticky;top:14px;}
+        .form-card h3{margin:2px 0 12px;font-size:18px;color:#f1f5f9;}
+        .form-grid{display:grid;grid-template-columns:1fr;gap:10px;}
+        label{font-size:13px;font-weight:600;color:#cbd5e1;display:block;margin-bottom:6px;}
+        select{width:100%;padding:10px;border-radius:10px;border:1px solid #334155;background:#0f172a;color:#e2e8f0;outline:none;transition:.2s ease;}
+        select:focus{border-color:#818cf8;box-shadow:0 0 0 4px rgba(99,102,241,.18);}
+        .submit-btn{margin-top:12px;width:100%;border:none;border-radius:10px;padding:12px;background:linear-gradient(135deg,#6366f1,#4f46e5);color:#fff;font-weight:700;cursor:pointer;box-shadow:0 10px 20px rgba(79,70,229,.35);transition:.2s ease;}
+        .submit-btn:hover{transform:translateY(-2px);}
 
-        select, button{
-            width:100%;
-            padding:10px;
-            margin-top:6px;
-            border-radius:8px;
-            border:1px solid #ccc;
+        .result-wrap{display:grid;gap:16px;}
+        .summary{padding:18px;}
+        .summary-top{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;}
+        .badge{padding:7px 10px;border-radius:999px;background:#1e293b;border:1px solid #334155;font-size:12px;font-weight:700;color:#cbd5e1;}
+        .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px;}
+        .metric{background:#0b1220;border:1px solid #334155;border-radius:12px;padding:12px;}
+        .metric p{margin:0;color:#94a3b8;font-size:12px;}
+        .metric h4{margin:6px 0 0;color:#f8fafc;font-size:17px;}
+
+        .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+        .chart-card{padding:16px;}
+        .chart-title{margin:0 0 10px;color:#f1f5f9;font-size:15px;font-weight:700;}
+        .chart-box{position:relative;height:250px;}
+        .chart-box canvas{width:100% !important;height:100% !important;}
+
+        .compare-box{position:relative;margin-bottom:8px;}
+        .compare-box input{width:100%;padding:9px 10px;border-radius:8px;border:1px solid #334155;background:#0f172a;color:#e2e8f0;outline:none;}
+        .compare-box input:focus{border-color:#818cf8;box-shadow:0 0 0 4px rgba(99,102,241,.16);}
+        .suggestions{position:absolute;top:38px;left:0;right:0;background:#0f172a;border:1px solid #334155;border-radius:6px;max-height:160px;overflow-y:auto;display:none;z-index:10;}
+        .suggestions div{padding:8px 10px;cursor:pointer;font-size:14px;}
+        .suggestions div:hover{background:#1e293b;}
+
+        .explain{padding:16px;}
+        .explain h4{margin:0 0 8px;font-size:15px;color:#f1f5f9;}
+        .explain ul{margin:0;padding-left:18px;}
+        .explain li{margin-bottom:6px;color:#cbd5e1;}
+
+        .empty-state{padding:28px;text-align:center;color:#94a3b8;}
+
+        @keyframes fadeIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+
+        @media (max-width:980px){
+            .layout{grid-template-columns:1fr;}
+            .form-card{position:relative;top:auto;}
         }
-
-        button{
-            background:#4f46e5;
-            color:#fff;
-            border:none;
-            margin-top:18px;
-            font-size:16px;
-            cursor:pointer;
+        @media (max-width:860px){
+            .topbar{flex-direction:column;}
+            .actions{width:100%;}
+            .action-btn{flex:1;text-align:center;}
+            .chart-grid{grid-template-columns:1fr;}
+            .metrics{grid-template-columns:1fr 1fr;}
         }
-
-        .charts{
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:18px;
-        }
-
-        canvas{height:200px !important;}
-
-        .compare-box{
-            position:relative;
-            margin-bottom:6px;
-        }
-
-        .compare-box input{
-            width:100%;
-            padding:7px 10px;
-            border-radius:6px;
-            border:1px solid #ccc;
-            font-size:14px;
-        }
-
-        .suggestions{
-            position:absolute;
-            top:36px;
-            left:0;
-            right:0;
-            background:#fff;
-            border:1px solid #ddd;
-            border-radius:6px;
-            max-height:160px;
-            overflow-y:auto;
-            display:none;
-            z-index:10;
-        }
-
-        .suggestions div{
-            padding:8px 10px;
-            cursor:pointer;
-            font-size:14px;
-        }
-
-        .suggestions div:hover{
-            background:#f1f5f9;
-        }
-
-        .compare-note{
-            font-size:12px;
-            color:#666;
-            margin-bottom:6px;
+        @media (max-width:520px){
+            .title h2{font-size:25px;}
+            .metrics{grid-template-columns:1fr;}
+            .chart-box{height:220px;}
         }
     </style>
 </head>
 
 <body>
 <div class="container">
+    <div class="topbar">
+        <div class="title">
+            <h2>Prediction Studio</h2>
+            <p>Configure your profile and generate a structured stock recommendation</p>
+        </div>
+        <div class="actions">
+            <a href="/market" class="action-btn">Back to Dashboard</a>
+            <a href="/logout" class="action-btn">Logout</a>
+        </div>
+    </div>
 
-<h2 style="text-align:center;">🤖 AI Stock Advisor</h2>
+    <div class="layout">
+        <div class="glass form-card">
+            <h3>Investor Profile</h3>
+            <form method="POST" class="form-grid">
+                <div>
+                    <label>Risk Appetite</label>
+                    <select name="risk">
+                        <option {% if form.risk=="Low" %}selected{% endif %}>Low</option>
+                        <option {% if form.risk=="Medium" %}selected{% endif %}>Medium</option>
+                        <option {% if form.risk=="High" %}selected{% endif %}>High</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Investment Horizon</label>
+                    <select name="horizon">
+                        <option {% if form.horizon=="Short" %}selected{% endif %}>Short</option>
+                        <option {% if form.horizon=="Long" %}selected{% endif %}>Long</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Capital Amount</label>
+                    <select name="capital">
+                        <option {% if form.capital=="₹5k–₹10k" %}selected{% endif %}>₹5k–₹10k</option>
+                        <option {% if form.capital=="₹10k–₹25k" %}selected{% endif %}>₹10k–₹25k</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Sector Preference</label>
+                    <select name="sector">
+                        <option {% if form.sector=="IT" %}selected{% endif %}>IT</option>
+                        <option {% if form.sector=="Banking" %}selected{% endif %}>Banking</option>
+                        <option {% if form.sector=="Auto" %}selected{% endif %}>Auto</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Market Mood</label>
+                    <select name="mood">
+                        <option {% if form.mood=="Safe" %}selected{% endif %}>Safe</option>
+                        <option {% if form.mood=="Neutral" %}selected{% endif %}>Neutral</option>
+                        <option {% if form.mood=="Aggressive" %}selected{% endif %}>Aggressive</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Time Frame</label>
+                    <select name="timeframe">
+                        <option value="1M" {% if form.timeframe=="1M" %}selected{% endif %}>1 Month</option>
+                        <option value="3M" {% if form.timeframe=="3M" %}selected{% endif %}>3 Months</option>
+                        <option value="6M" {% if form.timeframe=="6M" %}selected{% endif %}>6–12 Months</option>
+                    </select>
+                </div>
+                <button type="submit" class="submit-btn">Generate Prediction</button>
+            </form>
+        </div>
 
-<!-- ================= FORM ================= -->
-<div class="card">
-<form method="POST">
+        <div class="result-wrap">
+            {% if result %}
+            <div class="glass summary">
+                <div class="summary-top">
+                    <div>
+                        <div style="font-size:14px;color:#94a3b8;">Recommended Stock</div>
+                        <div style="font-size:24px;font-weight:700;color:#f8fafc;">{{ result.stock }}</div>
+                    </div>
+                    <div class="badge">Action: {{ result.action }}</div>
+                </div>
+                <div class="metrics">
+                    <div class="metric"><p>Present</p><h4>₹{{ result.present }}</h4></div>
+                    <div class="metric"><p>Target</p><h4>₹{{ result.target }}</h4></div>
+                    <div class="metric"><p>Stop-Loss</p><h4>₹{{ result.stop_loss }}</h4></div>
+                    <div class="metric"><p>Time Frame</p><h4>{{ result.timeframe }}</h4></div>
+                </div>
+            </div>
 
-<label>Risk Appetite</label>
-<select name="risk">
-    <option {% if form.risk=="Low" %}selected{% endif %}>Low</option>
-    <option {% if form.risk=="Medium" %}selected{% endif %}>Medium</option>
-    <option {% if form.risk=="High" %}selected{% endif %}>High</option>
-</select>
+            <div class="chart-grid">
+                <div class="glass chart-card">
+                    <p class="chart-title">Price Trend</p>
+                    <div class="chart-box"><canvas id="trendChart"></canvas></div>
+                </div>
+                <div class="glass chart-card">
+                    <p class="chart-title">Relative Comparison</p>
+                    <div class="compare-box">
+                        <input id="compareInput" placeholder="Type stock (e.g. YESBANK)">
+                        <div class="suggestions" id="suggestions"></div>
+                    </div>
+                    <div class="chart-box"><canvas id="compareChart"></canvas></div>
+                </div>
+            </div>
 
-<label>Investment Horizon</label>
-<select name="horizon">
-    <option {% if form.horizon=="Short" %}selected{% endif %}>Short</option>
-    <option {% if form.horizon=="Long" %}selected{% endif %}>Long</option>
-</select>
+            {% if result.explanation %}
+            <div class="glass explain">
+                <h4>Why this recommendation was selected</h4>
+                <ul>
+                    {% for p in result.explanation %}
+                    <li>{{ p }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
 
-<label>Capital Amount</label>
-<select name="capital">
-    <option {% if form.capital=="₹5k–₹10k" %}selected{% endif %}>₹5k–₹10k</option>
-    <option {% if form.capital=="₹10k–₹25k" %}selected{% endif %}>₹10k–₹25k</option>
-</select>
-
-<label>Sector Preference</label>
-<select name="sector">
-    <option {% if form.sector=="IT" %}selected{% endif %}>IT</option>
-    <option {% if form.sector=="Banking" %}selected{% endif %}>Banking</option>
-    <option {% if form.sector=="Auto" %}selected{% endif %}>Auto</option>
-</select>
-
-<label>Market Mood</label>
-<select name="mood">
-    <option {% if form.mood=="Safe" %}selected{% endif %}>Safe</option>
-    <option {% if form.mood=="Neutral" %}selected{% endif %}>Neutral</option>
-    <option {% if form.mood=="Aggressive" %}selected{% endif %}>Aggressive</option>
-</select>
-
-<label>Time Frame</label>
-<select name="timeframe">
-    <option value="1M" {% if form.timeframe=="1M" %}selected{% endif %}>1 Month</option>
-    <option value="3M" {% if form.timeframe=="3M" %}selected{% endif %}>3 Months</option>
-    <option value="6M" {% if form.timeframe=="6M" %}selected{% endif %}>6–12 Months</option>
-</select>
-
-<button type="submit">Make My Prediction</button>
-</form>
+            {% else %}
+            <div class="glass empty-state">
+                Submit the profile form to generate prediction summary, price trend, and comparison analytics.
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
 
 {% if result %}
-
-<!-- ================= RESULT ================= -->
-<div class="card">
-    <b>Stock:</b> {{ result.stock }}<br>
-    <b>Action:</b> {{ result.action }}<br><br>
-    💰 <b>Present:</b> ₹{{ result.present }} |
-    🎯 <b>Target:</b> ₹{{ result.target }} |
-    🛑 <b>Stop-Loss:</b> ₹{{ result.stop_loss }}
-</div>
-
-<!-- ================= CHARTS ================= -->
-<div class="charts">
-
-<div class="card">
-    <b>{{ result.stock }} Price Trend</b>
-    <canvas id="trendChart"></canvas>
-</div>
-
-<div class="card">
-    <b>Comparison Chart</b>
-
-    <div class="compare-box">
-        <input id="compareInput" placeholder="Type stock (e.g. YESBANK)">
-        <div class="suggestions" id="suggestions"></div>
-    </div>
-
-    <div class="compare-note">
-        Visual comparison with {{ result.stock }}
-    </div>
-
-    <canvas id="compareChart"></canvas>
-</div>
-
-</div>
-
-<!-- ================= EXPLANATION (NEW) ================= -->
-{% if result.explanation %}
-<div class="card">
-    <b>📌 Why this stock is recommended</b>
-    <ul style="margin-top:10px;padding-left:18px;">
-        {% for p in result.explanation %}
-        <li style="margin-bottom:6px;color:#374151;">{{ p }}</li>
-        {% endfor %}
-    </ul>
-</div>
-{% endif %}
-
 <script>
-// ===== SAFE DUMMY DATA (NO chart undefined error) =====
 const dates = ["W1","W2","W3","W4","W5"];
 const prices = [
     {{ result.present * 0.96 }},
@@ -200,7 +221,17 @@ const prices = [
     {{ result.present }}
 ];
 
-// ===== TREND =====
+const chartOptions = {
+    responsive:true,
+    maintainAspectRatio:false,
+    animation:{duration:900, easing:'easeOutQuart'},
+    scales:{
+        x:{ticks:{color:'#94a3b8'}, grid:{color:'rgba(148,163,184,.12)'}},
+        y:{ticks:{color:'#94a3b8'}, grid:{color:'rgba(148,163,184,.12)'}}
+    },
+    plugins:{legend:{labels:{color:'#cbd5e1', boxWidth:12, font:{size:12}}}}
+};
+
 new Chart(document.getElementById("trendChart"), {
     type:"line",
     data:{
@@ -209,24 +240,23 @@ new Chart(document.getElementById("trendChart"), {
             label:"{{ result.stock }}",
             data:prices,
             borderColor:"#4f46e5",
+            backgroundColor:"rgba(79,70,229,.15)",
             fill:true,
             tension:0.4
         }]
-    }
+    },
+    options:chartOptions
 });
 
-// ===== NORMALIZATION =====
 const base = prices[0];
 const norm = prices.map(p => ((p-base)/base)*100);
 
-// ===== VALID STOCK LIST =====
 const STOCKS = [
  "RELIANCE","TCS","INFY","HDFCBANK","ICICIBANK",
  "SBIN","AXISBANK","YESBANK","ITC","LT",
  "MARUTI","TATAMOTORS","ADANIENT","BHARTIARTL"
 ];
 
-// ===== COMPARISON =====
 function fakeCompare(){
  let v=0;
  return norm.map(()=> (v += Math.random()*2-1));
@@ -237,13 +267,13 @@ let compareChart = new Chart(document.getElementById("compareChart"), {
  data:{
   labels:dates,
   datasets:[
-    { label:"{{ result.stock }} (%)", data:norm, borderColor:"#4f46e5" },
-    { label:"Comparison (%)", data:fakeCompare(), borderColor:"#f97316" }
+    { label:"{{ result.stock }} (%)", data:norm, borderColor:"#4f46e5", tension:.35 },
+    { label:"Comparison (%)", data:fakeCompare(), borderColor:"#f97316", tension:.35 }
   ]
- }
+ },
+ options:chartOptions
 });
 
-// ===== AUTOSUGGEST =====
 const input=document.getElementById("compareInput");
 const sugg=document.getElementById("suggestions");
 
@@ -268,9 +298,7 @@ input.addEventListener("input",()=>{
  sugg.style.display="block";
 });
 </script>
-
 {% endif %}
 
-</div>
 </body>
 </html>
