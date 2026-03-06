@@ -20,7 +20,8 @@ html{
 /* ===== NAVBAR ===== */
 nav{
     width:100%;
-    background:#0f172a;
+    background:rgba(15,23,42,0.88);
+    backdrop-filter:blur(8px);
     padding:14px 40px;
     display:flex;
     align-items:center;
@@ -58,21 +59,70 @@ nav ul li a:hover{
 /* ===== HERO (WELCOME) ===== */
 .hero{
     min-height:100vh;
-    background:linear-gradient(135deg,#4f46e5,#6366f1);
+    background:radial-gradient(circle at 20% 20%, #1e3a8a 0%, #0b1120 45%, #020617 100%);
     display:flex;
     align-items:center;
     justify-content:center;
     text-align:center;
     padding-top:90px;
     color:#fff;
+    position:relative;
+    overflow:hidden;
 }
+
+.hero::before,
+.hero::after{
+    content:"";
+    position:absolute;
+    border-radius:50%;
+    filter:blur(2px);
+    opacity:.33;
+    animation:float 12s ease-in-out infinite;
+}
+
+.hero::before{
+    width:360px;
+    height:360px;
+    background:#38bdf8;
+    top:10%;
+    left:-60px;
+}
+
+.hero::after{
+    width:280px;
+    height:280px;
+    background:#a78bfa;
+    right:-30px;
+    bottom:10%;
+    animation-delay:2s;
+}
+
+.stars,
+.stars::before,
+.stars::after{
+    position:absolute;
+    content:"";
+    inset:0;
+    background-image:radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.8), transparent 60%),
+                    radial-gradient(1.5px 1.5px at 80% 40%, rgba(148,163,184,.75), transparent 60%),
+                    radial-gradient(2px 2px at 60% 72%, rgba(255,255,255,.82), transparent 60%),
+                    radial-gradient(1.5px 1.5px at 34% 84%, rgba(191,219,254,.75), transparent 60%),
+                    radial-gradient(2px 2px at 74% 18%, rgba(196,181,253,.82), transparent 60%);
+    animation:twinkle 7s linear infinite;
+    z-index:0;
+}
+
+.stars::before{animation-duration:9s; opacity:.75;}
+.stars::after{animation-duration:12s; opacity:.52;}
 
 .hero-content{
     animation:fadeSlide 1.4s ease forwards;
+    position:relative;
+    z-index:1;
 }
 
 .hero h1{
-    font-size:48px;
+    font-size:50px;
     margin-bottom:16px;
 }
 
@@ -80,7 +130,7 @@ nav ul li a:hover{
     max-width:680px;
     font-size:18px;
     line-height:1.6;
-    color:#e0e7ff;
+    color:#cbd5e1;
     margin:auto;
 }
 
@@ -98,18 +148,19 @@ nav ul li a:hover{
 /* ===== TEAM SECTION ===== */
 #team{
     padding:100px 8%;
-    background:#f8fafc;
+    background:#0f172a;
 }
 
 #team h2{
     text-align:center;
     font-size:36px;
     margin-bottom:12px;
+    color:#f8fafc;
 }
 
 #team .subtitle{
     text-align:center;
-    color:#64748b;
+    color:#94a3b8;
     margin-bottom:60px;
     font-size:16px;
 }
@@ -123,11 +174,12 @@ nav ul li a:hover{
 
 /* ===== TEAM CARD ===== */
 .team-card{
-    background:#fff;
+    background:#111827;
+    border:1px solid #1f2937;
     border-radius:20px;
     padding:36px 24px 42px;
-    min-height:520px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.1);
+    min-height:470px;
+    box-shadow:0 16px 30px rgba(2,6,23,.48);
     text-align:center;
     position:relative;
     overflow:hidden;
@@ -141,8 +193,8 @@ nav ul li a:hover{
     inset:0;
     background:linear-gradient(
         120deg,
-        rgba(79,70,229,0.18),
-        rgba(99,102,241,0.18),
+        rgba(79,70,229,0.23),
+        rgba(56,189,248,0.18),
         transparent 60%
     );
     opacity:0;
@@ -183,6 +235,7 @@ nav ul li a:hover{
 .team-card h4{
     font-size:21px;
     margin-bottom:6px;
+    color:#f8fafc;
 }
 
 .team-card span{
@@ -194,31 +247,82 @@ nav ul li a:hover{
 .team-card p{
     font-size:14px;
     line-height:1.75;
-    color:#475569;
+    color:#cbd5e1;
     margin-top:16px;
+}
+
+.team-avatar{
+    width:150px;
+    height:150px;
+    margin:0 auto 22px;
+    border-radius:50%;
+    border:3px dashed #6366f1;
+    display:grid;
+    place-items:center;
+    color:#c7d2fe;
+    font-size:40px;
+    font-weight:700;
+    background:linear-gradient(145deg, rgba(99,102,241,.2), rgba(30,41,59,.7));
+}
+
+.team-card,
+#contact{
+    animation:fadeUp .7s ease both;
 }
 
 /* ===== CONTACT ===== */
 #contact{
     padding:70px;
     text-align:center;
-    background:#fff;
+    background:#020617;
 }
 
 #contact h2{
     font-size:30px;
     margin-bottom:10px;
+    color:#f8fafc;
 }
 
 #contact p{
-    color:#555;
+    color:#94a3b8;
 }
 
 /* ===== RESPONSIVE ===== */
 @media(max-width:768px){
+    nav{
+        padding:12px 16px;
+        gap:8px;
+        flex-direction:column;
+    }
+    nav ul{flex-wrap:wrap;justify-content:center;gap:14px;}
+    .hero{padding:110px 18px 26px;}
     .hero h1{font-size:34px;}
-    nav{flex-direction:column;gap:10px;}
-    nav ul{flex-wrap:wrap;justify-content:center;}
+    .hero p{font-size:16px;}
+    #team{padding:70px 5%;}
+    #team h2{font-size:30px;}
+    .team-card{min-height:auto;padding:30px 20px;}
+    #contact{padding:52px 18px;}
+}
+
+@media(max-width:460px){
+    nav .logo{font-size:18px;}
+    nav ul li a{font-size:14px;}
+    .hero h1{font-size:29px;}
+}
+
+@keyframes float{
+    0%,100%{transform:translateY(0);} 
+    50%{transform:translateY(-16px);} 
+}
+
+@keyframes fadeUp{
+    from{opacity:0;transform:translateY(16px);} 
+    to{opacity:1;transform:translateY(0);} 
+}
+
+@keyframes twinkle{
+    0%,100%{opacity:.65; transform:translateY(0);} 
+    50%{opacity:1; transform:translateY(-4px);} 
 }
 </style>
 </head>
@@ -230,7 +334,8 @@ nav ul li a:hover{
     <div class="logo">TRADEMIND AGENT</div>
     <ul>
         <li><a href="/">Home</a></li>
-        <li><a href="/login">Login / Signup</a></li>
+        <li><a href="/register">Register</a></li>
+        <li><a href="/login">Login</a></li>
         <li><a href="#team">Team</a></li>
         <li><a href="#contact">Contact</a></li>
     </ul>
@@ -238,6 +343,7 @@ nav ul li a:hover{
 
 <!-- ===== HERO ===== -->
 <section class="hero">
+    <div class="stars"></div>
     <div class="hero-content">
         <h1>Welcome to TRADEMIND AGENT</h1>
         <p>
@@ -271,9 +377,7 @@ nav ul li a:hover{
         </div>
 
         <div class="team-card">
-            <div class="team-img">
-                <img src="{{ url_for('static', filename='images/ml_engineer.jpeg') }}">
-            </div>
+            <div class="team-avatar">ML</div>
             <h4>ML Engineer</h4>
             <span>AI & Prediction Models</span>
             <p>
@@ -285,7 +389,7 @@ nav ul li a:hover{
 
         <div class="team-card">
             <div class="team-img">
-                <img src="{{ url_for('static', filename='images/backend_dev.jpeg') }}">
+                <img src="{{ url_for('static', filename='images/Photo2.jpg') }}">
             </div>
             <h4>Backend Developer</h4>
             <span>APIs & Systems</span>
@@ -293,6 +397,17 @@ nav ul li a:hover{
                 Designs scalable backend services.<br>
                 Handles real-time data pipelines.<br>
                 Ensures reliability & performance.
+            </p>
+        </div>
+
+        <div class="team-card">
+            <div class="team-avatar">MA</div>
+            <h4>Market Analyst</h4>
+            <span>Research & Insights</span>
+            <p>
+                Tracks market events and sentiment.<br>
+                Supports strategy with data insights.<br>
+                Helps align recommendations with trends.
             </p>
         </div>
 
