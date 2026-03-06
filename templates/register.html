@@ -35,7 +35,6 @@
             -webkit-backdrop-filter:blur(14px) saturate(130%);
             box-shadow:0 18px 50px rgba(0,0,0,.5);
             position:relative;
-<<<<<<< HEAD
             overflow:hidden;
             z-index:1;
             animation:fadeIn .7s ease;
@@ -61,11 +60,6 @@
             left:-50px;
             background:radial-gradient(circle, rgba(196,181,253,.35) 0%, rgba(196,181,253,0) 70%);
         }
-=======
-            z-index:1;
-            animation:fadeIn .7s ease;
-        }
->>>>>>> main
         h2{margin:0 0 6px;text-align:center;color:#f8fafc;font-size:28px;}
         .sub{margin:0 0 18px;text-align:center;color:#cbd5e1;font-size:14px;}
         .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
@@ -96,7 +90,6 @@
             transition:transform .2s ease;
         }
         .btn-primary:hover{transform:translateY(-2px);}
-<<<<<<< HEAD
 
         .divider{
             position:relative;
@@ -141,8 +134,6 @@
         }
         .btn-google:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(2,6,23,.28);background:#fff;}
         .btn-google svg{width:18px;height:18px;display:block;}
-=======
->>>>>>> main
         .msg{margin-top:12px;padding:9px;border-radius:9px;font-size:13px;text-align:center;}
         .error{background:rgba(127,29,29,.35);border:1px solid rgba(248,113,113,.45);color:#fecaca;}
         .success{background:rgba(21,128,61,.28);border:1px solid rgba(74,222,128,.42);color:#bbf7d0;}
@@ -161,11 +152,7 @@
 <div class="blob b3"></div>
 
 <div class="card">
-<<<<<<< HEAD
     <h2>Register</h2>
-=======
-    <h2>📝 Register</h2>
->>>>>>> main
     <p class="sub">Create your TradeMind AI account</p>
 
     <form method="POST">
@@ -193,7 +180,6 @@
         <input type="password" name="confirm_password" required>
 
         <button type="submit" class="btn-primary">Create Account</button>
-<<<<<<< HEAD
         <div class="divider"><span>or</span></div>
         <a href="/auth/google" class="btn-google" aria-label="Continue with Google">
             <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
@@ -204,8 +190,6 @@
             </svg>
             Continue with Google
         </a>
-=======
->>>>>>> main
 
         {% if error %}
             <div class="msg error">{{ error }}</div>

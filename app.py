@@ -14,10 +14,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-<<<<<<< HEAD
-=======
-app.secret_key = os.getenv("FLASK_SECRET_KEY", "trademind-dev-secret-key-change-me")
->>>>>>> main
 app.config.update(
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE="Lax"
@@ -39,7 +35,6 @@ def normalize_env_value(value):
     return cleaned
 
 
-<<<<<<< HEAD
 def env_to_bool(value, default=False):
     cleaned = normalize_env_value(value).lower()
     if not cleaned:
@@ -97,11 +92,6 @@ def get_effective_chat_model(provider):
             return CHATBOT_MODEL
         return "gemini-1.5-flash"
     return CHATBOT_MODEL
-=======
-GOOGLE_CLIENT_ID = normalize_env_value(GOOGLE_CLIENT_ID)
-GOOGLE_CLIENT_SECRET = normalize_env_value(GOOGLE_CLIENT_SECRET)
-GOOGLE_REDIRECT_URI = normalize_env_value(os.getenv("GOOGLE_REDIRECT_URI"))
->>>>>>> main
 
 
 def get_google_redirect_uri():
@@ -815,9 +805,5 @@ def logout():
 # RUN APP
 # ======================
 if __name__ == "__main__":
-<<<<<<< HEAD
     app.run(host=FLASK_HOST, port=FLASK_PORT, debug=FLASK_DEBUG)
-=======
-    app.run(debug=False)
->>>>>>> main
 
