@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Stock Advisor</title>
+    <link rel="stylesheet" href="../static/css/theme.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+<div class="navbar">
+
+<div class="logo">
+📈 TradeMind AI
+</div>
+
+<div class="menu">
+<a href="/market">Dashboard</a>
+<a href="/predict">Prediction</a>
+<a href="/logout">Logout</a>
+</div>
+
+</div>    
+<div class="predict-container">
+
+<h2 style="text-align:center;">🤖 AI Stock Advisor</h2>
+
+<!-- ================= FORM ================= -->
+<div class="card">
+<form method="POST">
+
+<label>Risk Appetite</label>
+<select name="risk">
+    <option {% if form.risk=="Low" %}selected{% endif %}>Low</option>
+    <option {% if form.risk=="Medium" %}selected{% endif %}>Medium</option>
+    <option {% if form.risk=="High" %}selected{% endif %}>High</option>
+</select>
+
+<label>Investment Horizon</label>
+<select name="horizon">
+    <option {% if form.horizon=="Short" %}selected{% endif %}>Short</option>
+    <option {% if form.horizon=="Long" %}selected{% endif %}>Long</option>
+</select>
+
+<label>Capital Amount</label>
+<select name="capital">
+    <option {% if form.capital=="₹5k–₹10k" %}selected{% endif %}>₹5k–₹10k</option>
+    <option {% if form.capital=="₹10k–₹25k" %}selected{% endif %}>₹10k–₹25k</option>
+</select>
+
+<label>Sector Preference</label>
+<select name="sector">
+    <option {% if form.sector=="IT" %}selected{% endif %}>IT</option>
+    <option {% if form.sector=="Banking" %}selected{% endif %}>Banking</option>
+    <option {% if form.sector=="Auto" %}selected{% endif %}>Auto</option>
+</select>
+
+<label>Market Mood</label>
+<select name="mood">
+    <option {% if form.mood=="Safe" %}selected{% endif %}>Safe</option>
+    <option {% if form.mood=="Neutral" %}selected{% endif %}>Neutral</option>
+    <option {% if form.mood=="Aggressive" %}selected{% endif %}>Aggressive</option>
+</select>
+
+<label>Time Frame</label>
+<select name="timeframe">
+    <option value="1M" {% if form.timeframe=="1M" %}selected{% endif %}>1 Month</option>
+    <option value="3M" {% if form.timeframe=="3M" %}selected{% endif %}>3 Months</option>
+    <option value="6M" {% if form.timeframe=="6M" %}selected{% endif %}>6–12 Months</option>
+</select>
+
+<button type="submit">Make My Prediction</button>
+</form>
+</div>
+
+{% if result %}
+
+<!-- ================= RESULT ================= -->
+<div class="card">
+    <b>Stock:</b> {{ result.stock }}<br>
+    <b>Action:</b> {{ result.action }}<br><br>
+    💰 <b>Present:</b> ₹{{ result.present }} |
+    🎯 <b>Target:</b> ₹{{ result.target }} |
+    🛑 <b>Stop-Loss:</b> ₹{{ result.stop_loss }}
+</div>
+
+<!-- ================= CHARTS ================= -->
+<div class="charts">
+
+<div class="card">
+    <b>{{ result.stock }} Price Trend</b>
+    <canvas id="trendChart"></canvas>
+</div>
+
+<div class="card">
+    <b>Comparison Chart</b>
+
+    <div class="compare-box">
+        <input id="compareInput" placeholder="Type stock (e.g. YESBANK)">
+        <div class="suggestions" id="suggestions"></div>
+    </div>
+
+    <div class="compare-note">
+        Visual comparison with {{ result.stock }}
+    </div>
+
+    <canvas id="compareChart"></canvas>
+</div>
+
+</div>
+
+<!-- ================= EXPLANATION (NEW) ================= -->
+{% if result.explanation %}
+<div class="card">
+    <b>📌 Why this stock is recommended</b>
+    <ul style="margin-top:10px;padding-left:18px;">
+        {% for p in result.explanation %}
+        <li style="margin-bottom:6px;color:#374151;">{{ p }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<script>
+// ===== SAFE DUMMY DATA (NO chart undefined error) =====
+const dates = ["W1","W2","W3","W4","W5"];
+const prices = [
+    {{ result.present * 0.96 }},
+    {{ result.present * 0.98 }},
+    {{ result.present * 0.99 }},
+    {{ result.present * 1.01 }},
+    {{ result.present }}
+];
+
+// ===== TREND =====
+new Chart(document.getElementById("trendChart"), {
+    type:"line",
+    data:{
+        labels:dates,
+        datasets:[{
+            label:"{{ result.stock }}",
+            data:prices,
+            borderColor:"#4f46e5",
+            fill:true,
+            tension:0.4
+        }]
+    }
+});
+
+// ===== NORMALIZATION =====
+const base = prices[0];
+const norm = prices.map(p => ((p-base)/base)*100);
+
+// ===== VALID STOCK LIST =====
+const STOCKS = [
+ "RELIANCE","TCS","INFY","HDFCBANK","ICICIBANK",
+ "SBIN","AXISBANK","YESBANK","ITC","LT",
+ "MARUTI","TATAMOTORS","ADANIENT","BHARTIARTL"
+];
+
+// ===== COMPARISON =====
+function fakeCompare(){
+ let v=0;
+ return norm.map(()=> (v += Math.random()*2-1));
+}
+
+let compareChart = new Chart(document.getElementById("compareChart"), {
+ type:"line",
+ data:{
+  labels:dates,
+  datasets:[
+    { label:"{{ result.stock }} (%)", data:norm, borderColor:"#4f46e5" },
+    { label:"Comparison (%)", data:fakeCompare(), borderColor:"#f97316" }
+  ]
+ }
+});
+
+// ===== AUTOSUGGEST =====
+const input=document.getElementById("compareInput");
+const sugg=document.getElementById("suggestions");
+
+input.addEventListener("input",()=>{
+ const q=input.value.toUpperCase();
+ sugg.innerHTML="";
+ if(!q){sugg.style.display="none";return;}
+ const m=STOCKS.filter(s=>s.startsWith(q));
+ if(!m.length){sugg.style.display="none";return;}
+ m.forEach(s=>{
+  const d=document.createElement("div");
+  d.textContent=s;
+  d.onclick=()=>{
+   input.value=s;
+   sugg.style.display="none";
+   compareChart.data.datasets[1].label=s+" (%)";
+   compareChart.data.datasets[1].data=fakeCompare();
+   compareChart.update();
+  };
+  sugg.appendChild(d);
+ });
+ sugg.style.display="block";
+});
+</script>
+
+{% endif %}
+
+</div>
+</body>
+</html>

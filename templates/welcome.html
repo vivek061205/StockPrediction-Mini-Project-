@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>TRADEMIND AGENT - AI Stock Intelligence</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+<link rel="stylesheet" href="../static/css/theme.css">
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<canvas id="candles-bg"></canvas>
+
+<!-- NAVBAR -->
+<nav class="landing-nav">
+
+<div class="logo">
+📈 TRADEMIND AGENT
+</div>
+
+<ul>
+<li><a href="/">Home</a></li>
+<li><a href="/login">Login / Signup</a></li>
+<li><a href="#market-data">Market</a></li>
+<li><a href="#team">Team</a></li>
+</ul>
+
+</nav>
+
+
+<!-- LIVE MARKET TICKER -->
+<div class="stock-ticker">
+
+<div class="ticker-track">
+
+<span>📊 NIFTY {{ nifty_price }} ▲</span>
+<span>📊 SENSEX {{ sensex_price }} ▲</span>
+<span>🏪 BANKNIFTY {{ banknifty_price }} ▲</span>
+<span>💰 GOLD ₹{{ gold_price }} 💰</span>
+<span>🪙 SILVER ₹{{ silver_price }} 🪙</span>
+
+<span>📊 NIFTY {{ nifty_price }} ▲</span>
+<span>📊 SENSEX {{ sensex_price }} ▲</span>
+<span>🏪 BANKNIFTY {{ banknifty_price }} ▲</span>
+<span>💰 GOLD ₹{{ gold_price }} 💰</span>
+<span>🪙 SILVER ₹{{ silver_price }} 🪙</span>
+
+</div>
+
+</div>
+
+
+
+<!-- HERO -->
+<section class="hero">
+
+<canvas id="candles"></canvas>
+<canvas id="network"></canvas>
+
+<div class="hero-content">
+
+<h1>
+AI Powered <span>Stock Intelligence</span>
+</h1>
+
+<p>
+TradeMind uses AI-driven analysis to help you make smarter market decisions with real-time data.
+</p>
+
+<a href="/login" class="hero-btn">
+Start Trading Today
+</a>
+
+</div>
+
+</section>
+
+
+
+<!-- LIVE MARKET DATA -->
+<section id="market-data" class="market-overview">
+
+<h2>📈 Live Market Overview</h2>
+
+<div class="market-grid">
+
+<div class="market-card">
+<div class="market-label">NIFTY 50</div>
+<div class="market-value green">{{ nifty_price }}</div>
+<canvas id="niftyChart" class="mini-chart"></canvas>
+</div>
+
+<div class="market-card">
+<div class="market-label">SENSEX</div>
+<div class="market-value green">{{ sensex_price }}</div>
+<canvas id="sensexChart" class="mini-chart"></canvas>
+</div>
+
+<div class="market-card">
+<div class="market-label">BANKNIFTY</div>
+<div class="market-value green">{{ banknifty_price }}</div>
+<canvas id="bankniftyChart" class="mini-chart"></canvas>
+</div>
+
+<div class="market-card">
+<div class="market-label">GOLD (per 10g)</div>
+<div class="market-value green">₹{{ gold_price }}</div>
+<canvas id="goldChart" class="mini-chart"></canvas>
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- FEATURES -->
+<section class="features">
+
+<div class="feature-card">
+<h3>🔄 Real-time Updates</h3>
+<p>Live market data refreshed every minute with actual stock prices.</p>
+</div>
+
+<div class="feature-card">
+<h3>🤖 AI Predictions</h3>
+<p>Machine learning powered buy/sell signals for optimal timing.</p>
+</div>
+
+<div class="feature-card">
+<h3>⚡ Risk Analysis</h3>
+<p>Smart portfolio insights with personalized risk management.</p>
+</div>
+
+<div class="feature-card">
+<h3>📊 Advanced Charts</h3>
+<p>Interactive candlestick and trend analysis visualization.</p>
+</div>
+
+</section>
+
+
+
+<!-- TEAM -->
+<section id="team" class="team-section">
+
+<h2>🏆 Our Team</h2>
+
+<div class="team-grid">
+
+<div class="team-card">
+<div class="team-avatar">TA</div>
+<h4>Tanish Agrawal</h4>
+<p>Frontend Developer</p>
+</div>
+
+<div class="team-card">
+<div class="team-avatar">VF</div>
+<h4>Vivek Faujdar</h4>
+<p>Backend Developer</p>
+</div>
+
+<div class="team-card">
+<div class="team-avatar">SS</div>
+<h4>Shyam Saini</h4>
+<p>Security Specialist</p>
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- FOOTER -->
+<footer class="footer">
+
+<p>📧 support@trademind.ai | 📍 India<br>E-mail: tanishagrawal8077@gmail.com<br>Insta: tanish_ag143</p>
+
+</footer>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+// ============================================
+// CANDLESTICK ANIMATION
+// ============================================
+
+const canvasBg = document.getElementById("candles-bg");
+const ctxBg = canvasBg.getContext("2d");
+
+canvasBg.width = window.innerWidth;
+canvasBg.height = window.innerHeight;
+
+let candles = [];
+
+for(let i=0; i<80; i++){
+    candles.push({
+        x: i*35,
+        open: 200 + Math.random()*80,
+        close: 200 + Math.random()*80
+    });
+}
+
+function drawCandleBackground(){
+    ctxBg.clearRect(0, 0, canvasBg.width, canvasBg.height);
+    
+    candles.forEach(c => {
+        let high = Math.max(c.open, c.close) + 15;
+        let low = Math.min(c.open, c.close) - 15;
+        
+        ctxBg.strokeStyle = c.close > c.open ? "#22c55e55" : "#ef444455";
+        ctxBg.lineWidth = 1;
+        
+        ctxBg.beginPath();
+        ctxBg.moveTo(c.x, high);
+        ctxBg.lineTo(c.x, low);
+        ctxBg.stroke();
+        
+        ctxBg.fillStyle = c.close > c.open ? "#22c55e44" : "#ef444444";
+        ctxBg.fillRect(c.x - 5, c.open, 10, c.close - c.open);
+        
+        c.x -= 0.15;
+    });
+    
+    if(candles[0].x < -20){
+        candles.shift();
+        candles.push({
+            x: canvasBg.width,
+            open: 200 + Math.random()*80,
+            close: 200 + Math.random()*80
+        });
+    }
+    
+    requestAnimationFrame(drawCandleBackground);
+}
+
+drawCandleBackground();
+
+// ============================================
+// MINI CHARTS
+// ============================================
+
+const chartConfig = {
+    type: 'line',
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: { display: false }
+        },
+        scales: {
+            y: { display: false },
+            x: { display: false }
+        }
+    }
+};
+
+// NIFTY Chart
+new Chart(document.getElementById('niftyChart'), {
+    ...chartConfig,
+    data: {
+        labels: {{ dates | tojson }},
+        datasets: [{
+            label: 'NIFTY',
+            data: {{ nifty_data | tojson }},
+            borderColor: '#22c55e',
+            backgroundColor: 'rgba(34, 197, 94, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4
+        }]
+    }
+});
+
+// SENSEX Chart
+new Chart(document.getElementById('sensexChart'), {
+    ...chartConfig,
+    data: {
+        labels: {{ dates | tojson }},
+        datasets: [{
+            label: 'SENSEX',
+            data: {{ dates | tojson }}.map((_, i) => {{ sensex_price }} - (500 - i*100)),
+            borderColor: '#3b82f6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4
+        }]
+    }
+});
+
+// BANKNIFTY Chart
+new Chart(document.getElementById('bankniftyChart'), {
+    ...chartConfig,
+    data: {
+        labels: {{ dates | tojson }},
+        datasets: [{
+            label: 'BANKNIFTY',
+            data: {{ dates | tojson }}.map((_, i) => {{ banknifty_price }} - (600 - i*120)),
+            borderColor: '#f59e0b',
+            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4
+        }]
+    }
+});
+
+// GOLD Chart
+new Chart(document.getElementById('goldChart'), {
+    ...chartConfig,
+    data: {
+        labels: {{ dates | tojson }},
+        datasets: [{
+            label: 'GOLD',
+            data: {{ dates | tojson }}.map((_, i) => {{ gold_price }} - (800 - i*160)),
+            borderColor: '#fbbf24',
+            backgroundColor: 'rgba(251, 191, 36, 0.1)',
+            borderWidth: 2,
+            fill: true,
+            tension: 0.4
+        }]
+    }
+});
+
+</script>
+
+</body>
+</html>
